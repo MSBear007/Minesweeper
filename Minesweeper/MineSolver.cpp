@@ -43,27 +43,27 @@ bool MineSolver::checkSurroundings(int x_coord, int y_coord, const std::vector<s
 
 	// checking surrounding cells. If we did put flag there before, substract 1 from the number in the cell.
 	for (auto pair : surrounding) {
-		number_to_check -= (int)(mines.getAt(x_coord + pair.second, y_coord + pair.first) == Tile::FLAG);
+		number_to_check -= (int)(mines.getAt(x_coord + pair.first, y_coord + pair.second) == Tile::FLAG);
 	}
 
 	int number_of_hiddens = 0;
 	// how many cells are left to reveal?
 	for (auto pair : surrounding) {
-		number_of_hiddens += (int)(mines.getAt(x_coord + pair.second, y_coord + pair.first) == Tile::HIDDEN);
+		number_of_hiddens += (int)(mines.getAt(x_coord + pair.first, y_coord + pair.second) == Tile::HIDDEN);
 	}
 
 	if (number_to_check == number_of_hiddens && number_of_hiddens > 0) { // put flags
 		result = true;
 		for (auto pair : surrounding) {
-			mines.mark(x_coord + pair.second, y_coord + pair.first);
+			mines.mark(x_coord + pair.first, y_coord + pair.second);
 		}
 	}
 
 	if (number_to_check == 0 && number_of_hiddens > 0) { // reveal
 		result = true;
 		for (auto pair: surrounding) {
-			if (mines.getAt(x_coord + pair.second, y_coord + pair.first) != Tile::FLAG)
-				mines.reveal(x_coord + pair.second, y_coord + pair.first);
+			if (mines.getAt(x_coord + pair.first, y_coord + pair.second) != Tile::FLAG)
+				mines.reveal(x_coord + pair.first, y_coord + pair.second);
 		}
 	}
 	return result;
@@ -72,8 +72,8 @@ bool MineSolver::checkSurroundings(int x_coord, int y_coord, const std::vector<s
 bool MineSolver::notSurroundedByHiddens(int x_coord, int y_coord, const std::vector<std::pair<int, int>>& surrounding)
 {
 	for (auto pair : surrounding) {
-		Tile tile = mines.getAt(x_coord + pair.second, y_coord + pair.first);
-		if (tile != Tile::HIDDEN && tile != Tile::FLAG)
+		Tile tile = mines.getAt(x_coord + pair.first, y_coord + pair.second);
+		if (tile != Tile::HIDDEN && tile != Tile::FLAG && tile != Tile::EMPTY)
 			return true;
 	}
 	return false;
@@ -219,7 +219,7 @@ std::vector<int> solveSystem(std::vector<std::vector<int>>& system) {
 		solution[i] = -1;
 	}
 
-	if (columns > 15) return solution; // too hard, skip it
+	if (columns > 17) return solution; // too hard, skip it
 
 	// we will generate all possible combinations and check if they satisfy our condition
 	// to be improved... maybe :-)

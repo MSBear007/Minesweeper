@@ -34,7 +34,7 @@ void Minefield::initRandom(int width, int height, int total_bombs, int x_clicked
 
     int bombs_placed = 0;
     int x_next, y_next;
-    int total_iterations = 0; // to prevent endless cycle we cap at 5000 iterations
+    int total_iterations = 0; // to prevent infinite loops we cap at 5000 iterations
 
     bool checkSurroundings = false;
 
