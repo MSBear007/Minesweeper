@@ -116,11 +116,8 @@ int main() {
 
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Key::S && started) { // solve
 				MineSolver solver(mines, 4);
-				auto start = std::chrono::high_resolution_clock::now();
 				solver.solve();
-				auto finish = std::chrono::high_resolution_clock::now();
 
-				std::cout << std::chrono::duration_cast<std::chrono::microseconds>(finish - start).count() << std::endl;
 
 				mines = solver.getMinefield();
 				tilemap.load(mines.getField(), sf::Vector2i(TILESIZE, TILESIZE));
