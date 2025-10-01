@@ -89,17 +89,20 @@ int main() {
 			}
 
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Key::R && started) {
-				mouseCoords = sf::Mouse::getPosition(window);
-				tileCoords.x = mouseCoords.x / TILESIZE;
-				tileCoords.y = mouseCoords.y / TILESIZE;
-				if (tileCoords.x < FIELDSIZE && tileCoords.y < FIELDSIZE) {
-					mines.initRandom(FIELDSIZE, FIELDSIZE, BOMBS, tileCoords.x, tileCoords.y);
-					started = true;
+				std::vector<std::vector<Tile>> tiles;
+
+				for (int i = 0; i < FIELDSIZE + 2; i++) {
+					tiles.push_back(std::vector<Tile>());
+					for (int j = 0; j < FIELDSIZE + 2; j++) {
+						tiles[i].push_back(Tile::HIDDEN);
+					}
 				}
-				tilemap.load(mines.getField(), sf::Vector2i(TILESIZE, TILESIZE));
+
+				tilemap.load(tiles, sf::Vector2i(TILESIZE, TILESIZE));
+				started = false;
 			}
 
-			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Right) { // mark
+			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Right && started) { // mark
 
 				mouseCoords = sf::Mouse::getPosition(window);
 				tileCoords.x = mouseCoords.x / TILESIZE;
