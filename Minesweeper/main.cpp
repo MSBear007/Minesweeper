@@ -57,7 +57,6 @@ int main() {
 
 	bool started = false;
 	bool game_not_lost = true;
-	bool game_started = false;
 	Minefield mines;
 
 	sf::Event event;
@@ -68,7 +67,7 @@ int main() {
 				window.close();
 			}
 
-			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Left) {
+			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Left) { // reveal or start
 
 				mouseCoords = sf::Mouse::getPosition(window);
 				tileCoords.x = mouseCoords.x / TILESIZE;
@@ -82,13 +81,13 @@ int main() {
 					}
 
 					game_not_lost = mines.reveal(tileCoords.x, tileCoords.y);
+					if (!game_not_lost) started = false;
 					tilemap.load(mines.getField(), sf::Vector2i(TILESIZE, TILESIZE));
 				}
 
-				game_started = true;
 			}
 
-			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Right) {
+			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Right) { // mark
 
 				mouseCoords = sf::Mouse::getPosition(window);
 				tileCoords.x = mouseCoords.x / TILESIZE;
@@ -103,7 +102,7 @@ int main() {
 				tilemap.load(mines.getField(), sf::Vector2i(TILESIZE, TILESIZE));
 			}
 
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Key::S && game_started) { // solve
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Key::S && started) { // solve
 				MineSolver solver(mines, 3);
 				solver.solve();
 				mines = solver.getMinefield();
