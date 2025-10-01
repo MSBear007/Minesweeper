@@ -12,6 +12,7 @@ private:
 	Minefield mines;
 
 	bool checkSurroundings(int x_coord, int y_coord, const std::vector<std::pair<int, int>> &surrounding);
+	bool notSurroundedByHiddens(int x_coord, int y_coord, const std::vector<std::pair<int, int>> &surrounding);
 
 	void solveLevelZero(int width, int height);
 	bool solveLevelN(int width, int height, int lvl);

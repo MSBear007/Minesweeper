@@ -69,6 +69,17 @@ bool MineSolver::checkSurroundings(int x_coord, int y_coord, const std::vector<s
 	return result;
 }
 
+bool MineSolver::notSurroundedByHiddens(int x_coord, int y_coord, const std::vector<std::pair<int, int>>& surrounding)
+{
+	for (auto pair : surrounding) {
+		Tile tile = mines.getAt(x_coord + pair.second, y_coord + pair.first);
+		if (tile != Tile::HIDDEN && tile != Tile::FLAG)
+			return true;
+	}
+	return false;
+
+}
+
 void MineSolver::solveLevelZero(int width, int height) {
 	bool check_is_successful = true;
 	int iterations = 0;
@@ -86,6 +97,7 @@ void MineSolver::solveLevelZero(int width, int height) {
 }
 
 // forms the system of linear equations to solve small chunk of the field (lvl 1 - 4x4, lvl 2 - 5x5, lvl 3 - 6x6 etc)
+// coordinates point at the top-left corner of the chunk
 std::vector<std::vector<int>> MineSolver::formSLESystem(int x_coord, int y_coord, int window_size)
 {
 	// checking if there are both revealed cells and hidden cells in the window interior, otherwise there is no point of solving SLE
@@ -99,7 +111,8 @@ std::vector<std::vector<int>> MineSolver::formSLESystem(int x_coord, int y_coord
 	std::vector<std::pair<int, int>> hiddens; // needed to determine the order of variables
 	for (int i = y_coord; i < y_coord + window_size; i++) {
 		for (int j = x_coord; j < x_coord + window_size; j++) {
-			if ((int)(mines.getAt(j, i) == Tile::HIDDEN) && !borderCondition(j, i)) {
+			if ( (int)(mines.getAt(j, i) == Tile::HIDDEN) && !borderCondition(j, i) 
+					&& notSurroundedByHiddens(j, i, innerCellSurrounding) ) {
 				hiddens_in_window ++;
 				hiddens.push_back(std::pair<int, int>(i, j));
 			}
@@ -160,7 +173,8 @@ bool MineSolver::applySolution(const std::vector<int>& solution, int x_coord, in
 	std::vector<std::pair<int, int>> hiddens; // needed to determine the order of variables
 	for (int i = y_coord; i < y_coord + window_size; i++) {
 		for (int j = x_coord; j < x_coord + window_size; j++) {
-			if ((int)(mines.getAt(j, i) == Tile::HIDDEN) && !borderCondition(j, i)) {
+			if ( (int)(mines.getAt(j, i) == Tile::HIDDEN) && !borderCondition(j, i) 
+				&& notSurroundedByHiddens(j, i, innerCellSurrounding) ) {
 				hiddens.push_back(std::pair<int, int>(i, j));
 			}
 		}
