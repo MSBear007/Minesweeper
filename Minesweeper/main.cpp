@@ -3,6 +3,7 @@
 #include "MineField.hpp"
 #include "MineSolver.hpp"
 #include <iostream>
+#include <chrono>
 
 #define TILESIZE 32
 #define BOMBS 99
@@ -87,6 +88,16 @@ int main() {
 
 			}
 
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Key::R && started) {
+				mouseCoords = sf::Mouse::getPosition(window);
+				tileCoords.x = mouseCoords.x / TILESIZE;
+				tileCoords.y = mouseCoords.y / TILESIZE;
+				if (tileCoords.x < FIELDSIZE && tileCoords.y < FIELDSIZE) {
+					mines.initRandom(FIELDSIZE, FIELDSIZE, BOMBS, tileCoords.x, tileCoords.y);
+					started = true;
+				}
+			}
+
 			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Right) { // mark
 
 				mouseCoords = sf::Mouse::getPosition(window);
@@ -103,11 +114,17 @@ int main() {
 			}
 
 			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Key::S && started) { // solve
-				MineSolver solver(mines, 3);
+				MineSolver solver(mines, 4);
+				auto start = std::chrono::high_resolution_clock::now();
 				solver.solve();
+				auto finish = std::chrono::high_resolution_clock::now();
+
+				std::cout << std::chrono::duration_cast<std::chrono::microseconds>(finish - start).count() << std::endl;
+
 				mines = solver.getMinefield();
 				tilemap.load(mines.getField(), sf::Vector2i(TILESIZE, TILESIZE));
 			}
+
 		}
 
 		window.draw(tilemap);
