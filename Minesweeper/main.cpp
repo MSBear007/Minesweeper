@@ -96,6 +96,7 @@ int main() {
 					mines.initRandom(FIELDSIZE, FIELDSIZE, BOMBS, tileCoords.x, tileCoords.y);
 					started = true;
 				}
+				tilemap.load(mines.getField(), sf::Vector2i(TILESIZE, TILESIZE));
 			}
 
 			if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Button::Right) { // mark
