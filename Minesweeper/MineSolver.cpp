@@ -219,7 +219,7 @@ std::vector<int> solveSystem(std::vector<std::vector<int>>& system) {
 		solution[i] = -1;
 	}
 
-	if (columns > 17) return solution; // too hard, skip it
+	if (columns > 24) return solution; // too hard, skip it
 
 	// we will generate all possible combinations and check if they satisfy our condition
 	// to be improved... maybe :-)
